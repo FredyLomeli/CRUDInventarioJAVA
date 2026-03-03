@@ -1,0 +1,7 @@
+5589|Laptop|12000.5
+9641|Termo para Cafe|50.0
+5544|Mochila|700.0
+8459|Bocina JBL|2000.5
+6687|Camisa|500.5
+2591|Lentes|2500.0
+9023|Lampara de cuarto|500.0
