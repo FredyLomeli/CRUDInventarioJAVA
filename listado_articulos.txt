@@ -1,7 +1,10 @@
-5589|Laptop|12000.5
-9641|Termo para Cafe|50.0
-5544|Mochila|700.0
-8459|Bocina JBL|2000.5
-6687|Camisa|500.5
-2591|Lentes|2500.0
+9641|Termo Ethan|200
+7777|Mochila azul|1400.50
 9023|Lampara de cuarto|500.0
+8617|Marcador Magistral Azul|30.25
+FER-004|Pinzas de Presion 10in|150.0
+FER-005|Desarmador Cruz 1/4x4|45.5
+ELE-003|Cable Calibre 12 AWG 100m|1200.0
+ELE-004|Foco LED 12W|30.0
+PLM-001|Cinta Teflon 1/2in|15.0
+PLM-002|Llave de Paso Cobre 3/4|85.0

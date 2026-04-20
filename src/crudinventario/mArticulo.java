@@ -52,8 +52,8 @@ public class mArticulo {
                 // Separa el dato guardado por un caracter especial
                 String[] datos = linea.split("\\|");
                 // Crea un String formateado como lo necesitas
-                String datoBonito = "Codigo: " + datos[0] + " Descripción: "
-                        + datos[1] + " Precio: " + datos[2];
+                String datoBonito = "Codigo: " + datos[0] + "| Descripción: "
+                        + datos[1] + "| Precio: " + datos[2];
                 // Agrega el registro a el listado de datos
                 listaRegistros.add(datoBonito);
             }
@@ -63,6 +63,88 @@ public class mArticulo {
             listaRegistros.add("Error al cargar los datos");
         }
         return listaRegistros;
+    }
+    
+    public void update(String lineaActual, String lineaNueva, 
+            String archivoOriginal){
+        
+        //Declaramos los archivos original(lectura) temporal(escritura)
+        java.io.File fileOriginal = new java.io.File(archivoOriginal);
+        java.io.File fileTemporal = new java.io.File("temporal.txt");
+        
+        String lineaLeida;
+        Boolean actualizado = false;
+        
+        try(BufferedReader br = new BufferedReader(new FileReader(fileOriginal));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(fileTemporal));){
+            
+            while((lineaLeida = br.readLine()) != null){
+                if(lineaLeida.equals(lineaActual)){
+                    bw.write(lineaNueva);
+                    actualizado = true;
+                } else {
+                    bw.write(lineaLeida);
+                }
+                bw.newLine();
+            }
+        }catch(Exception e){
+            System.out.println("Error al actualizar" + e.getMessage());
+        }
+        
+        // Eliminación de archivo original y renombre de temporal
+        if(actualizado){
+            if(fileOriginal.delete()){
+                fileTemporal.renameTo(fileOriginal);
+                System.out.println("Registro Actualizado");
+            } else {
+                System.out.println("Error: No se pudo borrar el archivo");
+            }
+        }else{
+            fileTemporal.delete();
+            System.out.println("No se encontró el registro");
+        }
+        
+        
+    }
+    
+    public void delete(String lineaActual, String archivoOriginal){
+        
+        //Declaramos los archivos original(lectura) temporal(escritura)
+        java.io.File fileOriginal = new java.io.File(archivoOriginal);
+        java.io.File fileTemporal = new java.io.File("temporal.txt");
+        
+        String lineaLeida;
+        Boolean eliminado = false;
+        
+        try(BufferedReader br = new BufferedReader(new FileReader(fileOriginal));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(fileTemporal));){
+            
+            while((lineaLeida = br.readLine()) != null){
+                if(lineaLeida.equals(lineaActual)){
+                    
+                    eliminado = true;
+                } else {
+                    bw.write(lineaLeida);
+                    bw.newLine();
+                }
+            }
+        }catch(Exception e){
+            System.out.println("Error al eliminar" + e.getMessage());
+        }
+        
+        // Eliminación de archivo original y renombre de temporal
+        if(eliminado){
+            if(fileOriginal.delete()){
+                fileTemporal.renameTo(fileOriginal);
+                System.out.println("Registro Eliminado");
+            } else {
+                System.out.println("Error: No se pudo borrar el archivo");
+            }
+        }else{
+            fileTemporal.delete();
+            System.out.println("No se encontró el registro");
+        }
+              
     }
     
 }
