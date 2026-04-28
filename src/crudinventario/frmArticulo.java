@@ -5,6 +5,14 @@
 package crudinventario;
 
 import javax.swing.JOptionPane;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -67,6 +75,7 @@ public class frmArticulo extends javax.swing.JFrame {
         jMenuBar2 = new javax.swing.JMenuBar();
         jmArchivo = new javax.swing.JMenu();
         jmiImportar = new javax.swing.JMenuItem();
+        jmiExportar = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Busqueda de Articulos"));
@@ -300,9 +309,13 @@ public class frmArticulo extends javax.swing.JFrame {
 
         jmArchivo.setText("Archivo");
 
-        jmiImportar.setText("Importar");
+        jmiImportar.setText("Importar (CSV)");
         jmiImportar.addActionListener(this::jmiImportarActionPerformed);
         jmArchivo.add(jmiImportar);
+
+        jmiExportar.setText("Exportar (JSON)");
+        jmiExportar.addActionListener(this::jmiExportarActionPerformed);
+        jmArchivo.add(jmiExportar);
 
         jMenuBar2.add(jmArchivo);
 
@@ -409,6 +422,56 @@ public class frmArticulo extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jmiImportarActionPerformed
 
+    private void jmiExportarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiExportarActionPerformed
+        try {
+            // 1. Preparamos una lista (La "caja") para guardar todos los artículos temporalmente en RAM
+            List<clsArticulo> listaArticulos = new ArrayList<>();
+
+            // 2. Abrimos el archivo de texto plano para lectura
+            BufferedReader br = new BufferedReader(new FileReader("listado_articulos.txt"));
+            String linea;
+
+            // 3. Recorremos el archivo secuencial línea por línea
+            while ((linea = br.readLine()) != null) {
+                String[] datos = linea.split("\\|");
+
+                // Verificamos que la línea tenga las 3 partes para evitar errores
+                if (datos.length >= 3) {
+                    // Parseamos el precio a double
+                    double precioParseado = Double.parseDouble(datos[2]);
+
+                    // Creamos el objeto y lo metemos a la lista
+                    clsArticulo nuevoArticulo = new clsArticulo(datos[0], datos[1], precioParseado);
+                    listaArticulos.add(nuevoArticulo);
+                }
+            }
+            br.close(); // Siempre cerrar el flujo de lectura
+
+            // ==========================================
+            // 4. LA MAGIA DE GSON (Serialización Masiva)
+            // ==========================================
+
+            // TIP DE INGENIERÍA: En lugar de usar 'new Gson()', usamos GsonBuilder
+            // con 'setPrettyPrinting' para que el archivo salga formateado con tabulaciones
+            // y saltos de línea (ideal para que los alumnos lo puedan leer fácil).
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+            // Convertimos TODA la lista a un solo String con formato JSON
+            String jsonFinal = gson.toJson(listaArticulos);
+
+            // 5. Guardamos el String gigante en un archivo nuevo .json
+            BufferedWriter bw = new BufferedWriter(new FileWriter("respaldo_articulos.json"));
+            bw.write(jsonFinal);
+            bw.close();
+
+            JOptionPane.showMessageDialog(this, "¡Exportación masiva a JSON exitosa!");
+
+        } catch (Exception e) {
+            System.out.println(" Error durante la exportación a JSON: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jmiExportarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
@@ -435,6 +498,7 @@ public class frmArticulo extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JMenu jmArchivo;
+    private javax.swing.JMenuItem jmiExportar;
     private javax.swing.JMenuItem jmiImportar;
     private javax.swing.JLabel lblCodigo;
     private javax.swing.JLabel lblDescripcion;
